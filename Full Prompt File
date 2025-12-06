@@ -1,0 +1,112 @@
+# Role: Senior Full-Stack Architect & Developer
+
+**Objective:**
+Architect and build a massive, production-grade Full-Stack Web Application called **"FocusFlow Studio Manager"**.
+The application must contain at least **10 distinct interactive pages**, be fully styled, and include robust self-correcting error handling.
+
+## 1. Tech Stack & Environment
+* **Framework:** Next.js 14+ (App Router)
+* **Language:** TypeScript (Strict mode)
+* **Styling:** Tailwind CSS + Shadcn/UI (for consistency across 10+ pages) + Framer Motion (animations).
+* **Database:** PostgreSQL (via Neon or Supabase).
+* **ORM:** Prisma.
+* **Auth:** NextAuth.js (v5) (Google + Email/Password).
+* **State:** Zustand (Global store for Timer & Cart).
+* **Validation:** Zod (Backend & Frontend).
+
+## 2. Site Architecture (The 10 Required Pages)
+You are required to build the following 10 distinct routes. Ensure a consistent Layout (Navbar/Footer) wraps them, except for Auth pages.
+
+### Public Routes
+1.  **`/` (Home/Landing):**
+    * Hero section with 3D elements or high-quality parallax.
+    * Feature breakdown (Timer, Calculator, Rentals).
+    * Testimonials.
+2.  **`/about` (About Us):**
+    * Story of the studio.
+    * Team member grid.
+    * Studio location map integration.
+3.  **`/contact` (Support/Contact):**
+    * Contact form (connected to API).
+    * FAQ Accordion section.
+4.  **`/pricing` (Services List):**
+    * Static pricing cards for different studio rooms (e.g., "The White Cyclorama", "The Green Screen Room").
+
+### Authentication Routes
+5.  **`/login` (Sign In):**
+    * Split screen design (Image on left, Form on right).
+    * Social login buttons.
+6.  **`/signup` (Register):**
+    * Multi-step form (Account Details -> Studio Preferences).
+
+### Protected User Routes (The Core App)
+7.  **`/dashboard` (Main Workspace):**
+    * **The Timer:** A sophisticated stopwatch for "Lighting/Set Time" with Pause/Resume.
+    * **Live Calculator:** Dynamic cost estimation based on active timer duration.
+    * **Quick Actions:** Widget to quickly add common equipment.
+8.  **`/equipment` (Rental Catalog):**
+    * A full e-commerce style grid of equipment (Cameras, Lights, Props).
+    * Search bar and Filters (Category, Price).
+    * "Add to Session" functionality.
+9.  **`/history` (Session Logs):**
+    * Data table of past sessions.
+    * Export to PDF button for invoices.
+10. **`/settings` (User Profile):**
+    * Avatar upload.
+    * Password reset.
+    * Notification preferences.
+
+---
+
+## 3. Specific Feature Requirements
+
+### The "Self-Healing" Live Chatbox
+* **Component:** A floating widget present on all pages.
+* **Features:**
+    * User can ask: "How do I add a strobe light?"
+    * **Context Awareness:** If the user is on the `/dashboard`, the bot offers dashboard-specific tips.
+    * **Mock AI:** Use a predefined JSON intent map to answer questions about pricing and errors.
+
+### The "Auto-Rectify" Error Handling System
+You must implement a global `ErrorBoundary` and specific API wrappers.
+1.  **Frontend:** If a component fails (e.g., The Timer crashes), the app must *not* go white. It should render a "Fallback UI" that allows the user to reset the state and continue without reloading the page.
+2.  **Backend:** Create a middleware function `safeApiHandler(req, res)` that wraps all DB calls.
+    * *Logic:* If a DB query fails, retry it once automatically before throwing an error.
+
+## 4. Database Schema (Prisma)
+Create these tables to support the 10 pages:
+* `User`: (id, email, password, role, avatar)
+* `Session`: (id, userId, startTime, endTime, totalCost, status)
+* `Equipment`: (id, name, category, hourlyRate, stock, imageUrl)
+* `SessionItem`: (id, sessionId, equipmentId, quantity)
+* `Ticket`: (id, userId, message, status) -- For the Contact page.
+
+## 5. Development Instructions (Step-by-Step)
+
+**Step 1: Setup & Config**
+Initialize the Next.js app, install Shadcn/UI, and set up the Prisma Schema.
+
+**Step 2: Global Layouts**
+Create the `Navbar`, `Sidebar` (for dashboard), and `Footer`. Integrate the `ChatWidget` here so it appears everywhere.
+
+**Step 3: Public Pages**
+Build Home, About, Contact, Pricing. Focus on UI/UX and responsiveness.
+
+**Step 4: Auth Flow**
+Build Login/Signup using NextAuth and Zod validation.
+
+**Step 5: Core Logic (Dashboard & Equipment)**
+* Implement the `useTimer` hook (must survive page refreshes using local storage).
+* Implement the `CostCalculator` logic: `(Time * StudioRate) + (Equipment * Quantity * Time)`.
+
+**Step 6: Data & Settings**
+Build the History table and Settings forms.
+
+**Step 7: Robustness Check**
+Wrap critical components in `<ErrorBoundary>` and implement the retry logic in API routes.
+
+---
+
+**Output Requirement:**
+Please generate the code starting with the **File Structure**, then the **Prisma Schema**, then the **API Utilities**, and finally the **Page Components**.
+If you encounter a logic conflict during generation (e.g., circular dependencies), please output: *"**Auto-Correction Triggered:** [Description of fix]"* and continue.
